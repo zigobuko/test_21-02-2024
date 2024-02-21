@@ -22,8 +22,18 @@ filename=$(basename "$download_url")
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
-# Unzip the downloaded file
-unzip -q -d ~/Downloads/ -j ~/Downloads/"$filename" "*.app"
+# List contents of the zip file
+app_file=$(unzip -l ~/Downloads/"$filename" | grep -E '\.app$' | awk '{print $4}')
+
+# Check if .app file is found
+if [ -z "$app_file" ]; then
+    echo "No .app file found in the zip archive."
+    rm ~/Downloads/"$filename"  # Remove the zip file
+    exit 1
+fi
+
+# Extract the .app file to the Downloads folder
+unzip -q -j ~/Downloads/"$filename" "$app_file" -d ~/Downloads/
 
 # Remove the zip file
 rm ~/Downloads/"$filename"
