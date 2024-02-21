@@ -5,8 +5,8 @@ owner="zigobuko"
 repo="test_21-02-2024"
 
 # Create temp folder if it doesn't exist
-temp_folder=~/Downloads/temp
-mkdir -p "$temp_folder"
+temp_folder=$(mktemp -d)
+# mkdir -p "$temp_folder"
 
 # Get the latest release information
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
