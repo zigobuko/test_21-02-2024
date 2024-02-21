@@ -41,9 +41,17 @@ if [ -e ~/Downloads/"$(basename "$app_file")" ]; then
 fi
 
 # Move the .app file to the Downloads folder
-mv "$app_file" ~/Downloads/
+mv "$app_file" ~/Downloads/ && zip_deleted=true
 
-# Remove the temporary directory
-rm -rf "$temp_dir"
+# Remove the temporary directory if the move was successful
+if [ $? -eq 0 ]; then
+    rm -rf "$temp_dir"
+fi
 
-echo "Downloaded and extracted successfully."
+# Remove the zip file if it was successfully extracted and moved
+if [ "$zip_deleted" = true ]; then
+    rm ~/Downloads/"$filename"
+    echo "Downloaded and extracted successfully."
+else
+    echo "Failed to extract the zip file."
+fi
