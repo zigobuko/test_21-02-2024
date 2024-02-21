@@ -5,13 +5,10 @@ owner="zigobuko"
 repo="test_21-02-2024"
 
 # Get the latest release information
-echo "Fetching latest release information..."
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
-echo "Release info: $release_info"
 
 # Extract download URL for the zip file containing "SMST" in its name
 download_url=$(echo "$release_info" | grep -o '"browser_download_url": ".*SMST.*\.zip"' | cut -d '"' -f 4)
-echo "Download URL: $download_url"
 
 # Check if download URL is empty (i.e., if no matching zip file was found)
 if [ -z "$download_url" ]; then
