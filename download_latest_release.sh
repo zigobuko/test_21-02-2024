@@ -25,6 +25,9 @@ curl -sSL "$download_url" -o ~/Downloads/"$filename"
 # Unzip the downloaded file to the Downloads folder
 unzip -q -d ~/Downloads/ ~/Downloads/"$filename"
 
+# Remove macOS-specific metadata directory (__MACOSX)
+rm -rf ~/Downloads/__MACOSX
+
 # Check if an .app file with the same name already exists in Downloads
 app_file=$(find ~/Downloads/ -name "*.app" -type f | head -n 1)
 if [ -n "$app_file" ]; then
