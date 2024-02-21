@@ -22,11 +22,20 @@ filename=$(basename "$download_url")
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
-# Unzip the downloaded file to the Downloads folder
-unzip -q -d ~/Downloads/ ~/Downloads/"$filename"
+# Create a temporary directory to extract the files
+temp_dir=$(mktemp -d)
+
+# Unzip the downloaded file to the temporary directory
+unzip -q -d "$temp_dir" ~/Downloads/"$filename"
 
 # Remove unwanted files and folders
-rm -rf ~/Downloads/__MACOSX
+rm -rf "$temp_dir"/__MACOSX
+
+# Move the .app file to the Downloads folder, overwriting if necessary
+mv -fu "$temp_dir"/*.app ~/Downloads/
+
+# Remove the temporary directory and the zip file
+rm -rf "$temp_dir"
 rm ~/Downloads/"$filename"
 
 echo "Downloaded and extracted successfully."
