@@ -4,14 +4,20 @@
 owner="zigobuko"
 repo="test_21-02-2024"
 
-# Get the latest release tag
-latest_tag=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+# Get the latest release information
+release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
 
 # Extract download URL for the zip file containing "SMST" in its name
 download_url=$(echo "$release_info" | grep -o '"browser_download_url": ".*SMST.*\.zip"' | cut -d '"' -f 4)
 
+# Check if download URL is empty (i.e., if no matching zip file was found)
+if [ -z "$download_url" ]; then
+    echo "No zip file containing 'SMST' in its name found in the latest release."
+    exit 1
+fi
+
 # Extract file name from the download URL
 filename=$(basename "$download_url")
 
-# Download the zip file to the Downloads folder with the original name
+# Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
