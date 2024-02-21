@@ -23,7 +23,7 @@ filename=$(basename "$download_url")
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
 # List contents of the zip file and search for .app file
-app_file=$(unzip -l ~/Downloads/"$filename" | grep -oE '\S*\.app' | head -n 1)
+app_file=$(unzip -l ~/Downloads/"$filename" | grep -oE '\S*\.app' | grep -v '__MACOSX' | head -n 1)
 
 # Check if .app file is found
 if [ -z "$app_file" ]; then
