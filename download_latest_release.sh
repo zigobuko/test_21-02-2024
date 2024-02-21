@@ -18,43 +18,35 @@ fi
 
 # Extract file name from the download URL
 filename=$(basename "$download_url")
-echo "Filename: $filename"
 
 # Download the zip file to the temp folder within the Downloads folder
-temp_folder=~/Downloads/temp
-mkdir -p "$temp_folder"
-echo "Downloading zip file to: $temp_folder/$filename"
-curl -sSL "$download_url" -o "$temp_folder/$filename"
+curl -sSL "$download_url" -o ~/Downloads/temp/"$filename"
 
 # Unzip the downloaded file to the temp folder
-echo "Unzipping the downloaded file to: $temp_folder"
-unzip -q -d "$temp_folder" "$temp_folder/$filename"
+unzip -q -d ~/Downloads/temp/ ~/Downloads/temp/"$filename"
 
-# Delete the .zip file
-echo "Deleting the zip file: $temp_folder/$filename"
-rm "$temp_folder/$filename"
+# Remove the downloaded zip file
+rm ~/Downloads/temp/"$filename"
 
-# Check if the Downloads folder already contains the .app file with the same name
-if [ -e ~/Downloads/"$filename" ]; then
-    if [ -e "$temp_folder/$filename" ]; then
-        echo "File $filename already exists in Downloads."
-    else
-        echo "Moving $filename to Downloads folder."
-        mv "$temp_folder/$filename" ~/Downloads/ || { echo "Failed to move $filename to Downloads folder."; exit 1; }
-    fi
+# Find the file with ".app" extension in the temp folder
+app_file=$(find ~/Downloads/temp -name "*.app" -type f -print -quit)
+
+if [ -z "$app_file" ]; then
+    echo "No .app file found in the downloaded zip."
+    rm -rf ~/Downloads/temp
+    exit 1
+fi
+
+# Check if the same file exists in the Downloads folder
+if [ -e ~/Downloads/$(basename "$app_file") ]; then
+    echo "File $(basename "$app_file") already exists in Downloads."
 else
-    if [ -e "$temp_folder/$filename" ]; then
-        echo "Moving $filename to Downloads folder."
-        mv "$temp_folder/$filename" ~/Downloads/ || { echo "Failed to move $filename to Downloads folder."; exit 1; }
-    else
-        echo "Error: $filename not found in temp folder."
-        exit 1
-    fi
+    # Move the .app file from temp folder to Downloads folder
+    mv "$app_file" ~/Downloads/
 fi
 
 # Delete the temp folder
-echo "Deleting temp folder: $temp_folder"
-rm -rf "$temp_folder"
+rm -rf ~/Downloads/temp
 
 echo "Downloaded and extracted successfully."
 
