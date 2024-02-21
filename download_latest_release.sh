@@ -43,8 +43,7 @@ fi
 # Move the .app file to the Downloads folder
 mv "$app_file" ~/Downloads/
 
-# Remove the temporary directory and the zip file
+# Remove the temporary directory
 rm -rf "$temp_dir"
-rm ~/Downloads/"$filename"
 
 echo "Downloaded and extracted successfully."
