@@ -4,6 +4,10 @@
 owner="zigobuko"
 repo="test_21-02-2024"
 
+# Create temp folder if it doesn't exist
+temp_folder=~/Downloads/temp
+mkdir -p "$temp_folder"
+
 # Get the latest release information
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
 
@@ -20,33 +24,32 @@ fi
 filename=$(basename "$download_url")
 
 # Download the zip file to the temp folder within the Downloads folder
-curl -sSL "$download_url" -o ~/Downloads/temp/"$filename"
+curl -sSL "$download_url" -o "$temp_folder/$filename"
 
 # Unzip the downloaded file to the temp folder
-unzip -q -d ~/Downloads/temp/ ~/Downloads/temp/"$filename"
+unzip -q -d "$temp_folder" "$temp_folder/$filename"
 
 # Remove the downloaded zip file
-rm ~/Downloads/temp/"$filename"
+rm "$temp_folder/$filename"
 
-# # Find the file with ".app" extension in the temp folder
-# app_file=$(find ~/Downloads/temp -name "*.app" -type f -print -quit)
+# Find the file with ".app" extension in the temp folder
+app_file=$(find "$temp_folder" -name "*.app" -type f -print -quit)
 
-# if [ -z "$app_file" ]; then
-#     echo "No .app file found in the downloaded zip."
-#     rm -rf ~/Downloads/temp
-#     exit 1
-# fi
+if [ -z "$app_file" ]; then
+    echo "No .app file found in the downloaded zip."
+    rm -rf "$temp_folder"
+    exit 1
+fi
 
-# # Check if the same file exists in the Downloads folder
-# if [ -e ~/Downloads/$(basename "$app_file") ]; then
-#     echo "File $(basename "$app_file") already exists in Downloads."
-# else
-#     # Move the .app file from temp folder to Downloads folder
-#     mv "$app_file" ~/Downloads/
-# fi
+# Check if the same file exists in the Downloads folder
+if [ -e ~/Downloads/$(basename "$app_file") ]; then
+    echo "File $(basename "$app_file") already exists in Downloads."
+else
+    # Move the .app file from temp folder to Downloads folder
+    mv "$app_file" ~/Downloads/
+fi
 
-# # Delete the temp folder
-# rm -rf ~/Downloads/temp
+# Delete the temp folder
+rm -rf "$temp_folder"
 
-# echo "Downloaded and extracted successfully."
-
+echo "Downloaded and extracted successfully."
