@@ -20,19 +20,25 @@ fi
 # Extract file name from the download URL
 filename=$(basename "$download_url")
 
-# Download the zip file to the Downloads folder
-curl -sSL "$download_url" -o ~/Downloads/"$filename"
+# Create a temporary directory for extraction
+temp_dir=$(mktemp -d)
 
-# Unzip the downloaded file to the Downloads folder, excluding macOS-specific metadata
-unzip -q -X -d ~/Downloads/ ~/Downloads/"$filename"
+# Download the zip file to the temporary directory
+curl -sSL "$download_url" -o "$temp_dir/$filename"
+
+# Unzip the downloaded file to the temporary directory
+unzip -q -d "$temp_dir" "$temp_dir/$filename"
+
+# Remove macOS-specific metadata directory (__MACOSX)
+rm -rf "$temp_dir/__MACOSX"
 
 # Check if an .app file with the same name already exists in Downloads
-app_file=$(find ~/Downloads/ -name "*.app" -type f | head -n 1)
+app_file=$(find "$temp_dir" -name "*.app" -type f | head -n 1)
 if [ -n "$app_file" ]; then
     app_filename=$(basename "$app_file")
     if [ -e ~/Downloads/"$app_filename" ]; then
         echo "An .app file with the same name already exists in the Downloads folder."
-        rm -rf ~/Downloads/"$filename"
+        rm -rf "$temp_dir"
         exit 1
     fi
 fi
@@ -40,7 +46,7 @@ fi
 # Move the .app file to the Downloads folder
 mv "$app_file" ~/Downloads/
 
-# Remove the zip file
-rm ~/Downloads/"$filename"
+# Remove the temporary directory
+rm -rf "$temp_dir"
 
 echo "Downloaded and extracted successfully."
