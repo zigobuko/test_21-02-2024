@@ -32,18 +32,16 @@ unzip -q -d "$temp_dir" ~/Downloads/"$filename"
 rm -rf "$temp_dir"/__MACOSX
 
 # Check if an .app file with the same name already exists in Downloads
-if [ -e "~/Downloads/${filename%.zip}.app" ]; then
+app_file=$(find "$temp_dir" -name "*.app" -type f | head -n 1)
+if [ -e ~/Downloads/"$(basename "$app_file")" ]; then
     echo "An .app file with the same name already exists in the Downloads folder."
     rm -rf "$temp_dir"
     rm ~/Downloads/"$filename"
     exit 1
 fi
 
-# Move the .app file to the Downloads folder with a temporary name
-mv "$temp_dir"/*.app ~/Downloads/"${filename%.zip}.app.tmp"
-
-# Rename the .app file to its original name
-mv ~/Downloads/"${filename%.zip}.app.tmp" ~/Downloads/"${filename%.zip}.app"
+# Move the .app file to the Downloads folder
+mv "$app_file" ~/Downloads/
 
 # Remove the temporary directory and the zip file
 rm -rf "$temp_dir"
