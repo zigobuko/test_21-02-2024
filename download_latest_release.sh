@@ -4,6 +4,7 @@
 owner="zigobuko"
 repo="test_21-02-2024"
 
+
 # Get the latest release information
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
 
@@ -22,11 +23,8 @@ filename=$(basename "$download_url")
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
-# Unzip the downloaded file to the Downloads folder
-unzip -q -d ~/Downloads/ ~/Downloads/"$filename"
-
-# Remove macOS-specific metadata directory (__MACOSX)
-rm -rf ~/Downloads/__MACOSX
+# Unzip the downloaded file to the Downloads folder, excluding macOS-specific metadata
+unzip -q -X -d ~/Downloads/ ~/Downloads/"$filename"
 
 # Check if an .app file with the same name already exists in Downloads
 app_file=$(find ~/Downloads/ -name "*.app" -type f | head -n 1)
