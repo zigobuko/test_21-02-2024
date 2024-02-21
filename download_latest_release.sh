@@ -22,20 +22,26 @@ filename=$(basename "$download_url")
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
-# Find and extract the .app file from the zip
-app_file=$(unzip -l ~/Downloads/"$filename" | awk '$NF ~ /\.app$/ && $NF !~ /__MACOSX/ {print $NF; exit}')
+# Unzip the downloaded file to a temporary directory
+temp_dir=$(mktemp -d)
+unzip -q ~/Downloads/"$filename" -d "$temp_dir"
+
+# Find the .app file
+app_file=$(find "$temp_dir" -name "*.app" -type f)
 
 # Check if .app file is found
 if [ -z "$app_file" ]; then
     echo "No .app file found in the zip archive."
+    rm -rf "$temp_dir"  # Remove the temporary directory
     rm ~/Downloads/"$filename"  # Remove the zip file
     exit 1
 fi
 
-# Extract the .app file to the Downloads folder
-unzip -q ~/Downloads/"$filename" "$app_file" -d ~/Downloads/
+# Move the .app file to the Downloads folder
+mv "$app_file" ~/Downloads/
 
-# Remove the zip file
+# Remove the temporary directory and the zip file
+rm -rf "$temp_dir"
 rm ~/Downloads/"$filename"
 
 echo "Downloaded and extracted successfully."
