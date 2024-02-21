@@ -32,24 +32,24 @@ unzip -q -d "$temp_folder" "$temp_folder/$filename"
 # Remove the downloaded zip file
 rm "$temp_folder/$filename"
 
-# # Find the file with ".app" extension in the temp folder
-# app_file=$(find "$temp_folder" -name "*.app" -type f -print -quit)
+# Find the file with ".app" extension in the temp folder
+app_file=$(find "$temp_folder" -maxdepth 1 -type d -name "*.app")
 
-# if [ -z "$app_file" ]; then
-#     echo "No .app file found in the downloaded zip."
-#     rm -rf "$temp_folder"
-#     exit 1
-# fi
+if [ -z "$app_file" ]; then
+    echo "No .app file found in the downloaded zip."
+    rm -rf "$temp_folder"
+    exit 1
+fi
 
-# # Check if the same file exists in the Downloads folder
-# if [ -e ~/Downloads/$(basename "$app_file") ]; then
-#     echo "File $(basename "$app_file") already exists in Downloads."
-# else
-#     # Move the .app file from temp folder to Downloads folder
-#     mv "$app_file" ~/Downloads/
-# fi
+# Check if the same file exists in the Downloads folder
+if [ -e ~/Downloads/$(basename "$app_file") ]; then
+    echo "File $(basename "$app_file") already exists in Downloads."
+else
+    # Move the .app file from temp folder to Downloads folder
+    mv "$app_file" ~/Downloads/
+fi
 
-# # Delete the temp folder
-# rm -rf "$temp_folder"
+# Delete the temp folder
+rm -rf "$temp_folder"
 
-# echo "Downloaded and extracted successfully."
+echo "Downloaded and extracted successfully."
