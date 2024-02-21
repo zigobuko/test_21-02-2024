@@ -23,7 +23,7 @@ filename=$(basename "$download_url")
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
 # Unzip the downloaded file
-unzip -q -j ~/Downloads/"$filename" -d ~/Downloads/
+unzip -q ~/Downloads/"$filename" "*.app" -d ~/Downloads/
 
 # Remove the zip file
 rm ~/Downloads/"$filename"
