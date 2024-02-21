@@ -43,6 +43,9 @@ fi
 # Check if the same file exists in the Downloads folder
 if [ -e ~/Downloads/$(basename "$app_file") ]; then
     echo "File $(basename "$app_file") already exists in Downloads."
+    # Delete the temp folder
+    rm -rf "$temp_folder"
+    exit
 else
     # Move the .app file from temp folder to Downloads folder
     mv "$app_file" ~/Downloads/
