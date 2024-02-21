@@ -26,11 +26,8 @@ temp_dir=$(mktemp -d)
 # Download the zip file to the temporary directory
 curl -sSL "$download_url" -o "$temp_dir/$filename"
 
-# Unzip the downloaded file to the temporary directory
-unzip -q -d "$temp_dir" "$temp_dir/$filename"
-
-# Remove macOS-specific metadata directory (__MACOSX)
-rm -rf "$temp_dir/__MACOSX"
+# Unzip the downloaded file to the temporary directory, excluding macOS-specific metadata
+unzip -q -X -d "$temp_dir" "$temp_dir/$filename"
 
 # Check if an .app file with the same name already exists in Downloads
 app_file=$(find "$temp_dir" -name "*.app" -type f | head -n 1)
