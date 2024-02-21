@@ -31,15 +31,16 @@ unzip -q -d "$temp_dir" ~/Downloads/"$filename"
 # Remove unwanted files and folders
 rm -rf "$temp_dir"/__MACOSX
 
-# Move the .app file to the Downloads folder, overwriting if necessary
-if [ -e "$temp_dir"/*.app ]; then
-    mv -f "$temp_dir"/*.app ~/Downloads/
-else
-    echo "No .app file found in the downloaded archive."
+# Check if an .app file with the same name already exists in Downloads
+if [ -e "~/Downloads/${filename%.zip}.app" ]; then
+    echo "An .app file with the same name already exists in the Downloads folder."
     rm -rf "$temp_dir"
     rm ~/Downloads/"$filename"
     exit 1
 fi
+
+# Move the .app file to the Downloads folder
+mv "$temp_dir"/*.app ~/Downloads/
 
 # Remove the temporary directory and the zip file
 rm -rf "$temp_dir"
