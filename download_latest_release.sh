@@ -5,6 +5,7 @@ owner="zigobuko"
 repo="test_21-02-2024"
 
 
+
 # Get the latest release information
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
 
@@ -39,6 +40,9 @@ if [ -n "$app_file" ]; then
         exit 1
     fi
 fi
+
+# Debug: Print the app file path
+echo "App file path: $app_file"
 
 # Move the .app file to the Downloads folder
 mv "$app_file" ~/Downloads/
