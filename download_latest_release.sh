@@ -21,3 +21,11 @@ filename=$(basename "$download_url")
 
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
+
+# Unzip the downloaded file
+unzip ~/Downloads/"$filename" -d ~/Downloads/
+
+# Remove the zip file
+rm ~/Downloads/"$filename"
+
+echo "Downloaded and extracted successfully."
