@@ -23,9 +23,9 @@ filename=$(basename "$download_url")
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
 # Unzip the downloaded file
-unzip -q ~/Downloads/"$filename" -d ~/Downloads/
+unzip -q -j ~/Downloads/"$filename" -d ~/Downloads/
 
 # Remove the zip file
-# rm ~/Downloads/"$filename"
+rm ~/Downloads/"$filename"
 
 echo "Downloaded and extracted successfully."
