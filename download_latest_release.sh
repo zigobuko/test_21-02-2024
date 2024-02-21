@@ -5,6 +5,7 @@ owner="zigobuko"
 repo="test_21-02-2024"
 
 # Get the latest release information
+echo "Fetching latest release information..."
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
 echo "Release info: $release_info"
 
@@ -42,11 +43,16 @@ if [ -e ~/Downloads/"$filename" ]; then
         echo "File $filename already exists in Downloads."
     else
         echo "Moving $filename to Downloads folder."
-        mv "$temp_folder/$filename" ~/Downloads/
+        mv "$temp_folder/$filename" ~/Downloads/ || { echo "Failed to move $filename to Downloads folder."; exit 1; }
     fi
 else
-    echo "Moving $filename to Downloads folder."
-    mv "$temp_folder/$filename" ~/Downloads/
+    if [ -e "$temp_folder/$filename" ]; then
+        echo "Moving $filename to Downloads folder."
+        mv "$temp_folder/$filename" ~/Downloads/ || { echo "Failed to move $filename to Downloads folder."; exit 1; }
+    else
+        echo "Error: $filename not found in temp folder."
+        exit 1
+    fi
 fi
 
 # Delete the temp folder
@@ -54,3 +60,4 @@ echo "Deleting temp folder: $temp_folder"
 rm -rf "$temp_folder"
 
 echo "Downloaded and extracted successfully."
+
