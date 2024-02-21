@@ -39,8 +39,11 @@ if [ -e "~/Downloads/${filename%.zip}.app" ]; then
     exit 1
 fi
 
-# Move the .app file to the Downloads folder
-mv "$temp_dir"/*.app ~/Downloads/
+# Move the .app file to the Downloads folder with a temporary name
+mv "$temp_dir"/*.app ~/Downloads/"${filename%.zip}.app.tmp"
+
+# Rename the .app file to its original name
+mv ~/Downloads/"${filename%.zip}.app.tmp" ~/Downloads/"${filename%.zip}.app"
 
 # Remove the temporary directory and the zip file
 rm -rf "$temp_dir"
