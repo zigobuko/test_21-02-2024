@@ -4,9 +4,6 @@
 owner="zigobuko"
 repo="test_21-02-2024"
 
-# Create a temporary directory within the Downloads folder
-temp_dir=$(mktemp -d ~/Downloads/temp.XXXXXX)
-
 # Get the latest release information
 release_info=$(curl -s "https://api.github.com/repos/$owner/$repo/releases/latest")
 
@@ -22,22 +19,29 @@ fi
 # Extract file name from the download URL
 filename=$(basename "$download_url")
 
-# Download the zip file to the temporary folder
-curl -sSL "$download_url" -o "$temp_dir/$filename"
+# Download the zip file to the temp folder within the Downloads folder
+temp_folder=~/Downloads/temp
+mkdir -p "$temp_folder"
+curl -sSL "$download_url" -o "$temp_folder/$filename"
 
-# Unzip the downloaded file to the temporary folder
-unzip -q -d "$temp_dir" "$temp_dir/$filename"
+# Unzip the downloaded file to the temp folder
+unzip -q -d "$temp_folder" "$temp_folder/$filename"
 
-# Check if .app file exists in the Downloads folder with the same name
-if [ -e "~/Downloads/${filename%.zip}.app" ]; then
-    echo "File ${filename%.zip}.app already exists in Downloads."
-    # Remove the temporary directory
-    rm -rf "$temp_dir"
+# Delete the .zip file
+rm "$temp_folder/$filename"
+
+# Check if the Downloads folder already contains the .app file with the same name
+if [ -e ~/Downloads/"$filename" ]; then
+    if [ -e "$temp_folder/$filename" ]; then
+        echo "File $filename already exists in Downloads."
+    else
+        mv "$temp_folder/$filename" ~/Downloads/
+    fi
 else
-    # Move .app file from the temp folder to Downloads folder
-    mv "$temp_dir/${filename%.zip}.app" ~/Downloads/
-    # Remove the temporary directory
-    rm -rf "$temp_dir"
+    mv "$temp_folder/$filename" ~/Downloads/
 fi
+
+# Delete the temp folder
+rm -rf "$temp_folder"
 
 echo "Downloaded and extracted successfully."
