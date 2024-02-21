@@ -22,8 +22,8 @@ filename=$(basename "$download_url")
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
-# Unzip the downloaded file silently, excluding the __MACOSX folder
-unzip -q -d ~/Downloads/ -j ~/Downloads/"$filename" "*.app"
+# Unzip the downloaded file silently (suppressing output)
+unzip -q ~/Downloads/"$filename" -d ~/Downloads/
 
 # Remove the zip file
 rm ~/Downloads/"$filename"
