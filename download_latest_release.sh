@@ -22,36 +22,24 @@ filename=$(basename "$download_url")
 # Download the zip file to the Downloads folder
 curl -sSL "$download_url" -o ~/Downloads/"$filename"
 
-# Create a temporary directory to extract the files
-temp_dir=$(mktemp -d)
-
-# Unzip the downloaded file to the temporary directory
-unzip -q -d "$temp_dir" ~/Downloads/"$filename"
-
-# Remove unwanted files and folders
-rm -rf "$temp_dir"/__MACOSX
+# Unzip the downloaded file to the Downloads folder
+unzip -q -d ~/Downloads/ ~/Downloads/"$filename"
 
 # Check if an .app file with the same name already exists in Downloads
-app_file=$(find "$temp_dir" -name "*.app" -type f | head -n 1)
-if [ -e ~/Downloads/"$(basename "$app_file")" ]; then
-    echo "An .app file with the same name already exists in the Downloads folder."
-    rm -rf "$temp_dir"
-    rm ~/Downloads/"$filename"
-    exit 1
+app_file=$(find ~/Downloads/ -name "*.app" -type f | head -n 1)
+if [ -n "$app_file" ]; then
+    app_filename=$(basename "$app_file")
+    if [ -e ~/Downloads/"$app_filename" ]; then
+        echo "An .app file with the same name already exists in the Downloads folder."
+        rm -rf ~/Downloads/"$filename"
+        exit 1
+    fi
 fi
 
 # Move the .app file to the Downloads folder
-mv "$app_file" ~/Downloads/ && zip_deleted=true
+mv "$app_file" ~/Downloads/
 
-# Remove the temporary directory if the move was successful
-if [ $? -eq 0 ]; then
-    rm -rf "$temp_dir"
-fi
+# Remove the zip file
+rm ~/Downloads/"$filename"
 
-# Remove the zip file if it was successfully extracted and moved
-if [ "$zip_deleted" = true ]; then
-    rm ~/Downloads/"$filename"
-    echo "Downloaded and extracted successfully."
-else
-    echo "Failed to extract the zip file."
-fi
+echo "Downloaded and extracted successfully."
